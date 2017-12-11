@@ -140,7 +140,7 @@ public class gui {
 		frame.getContentPane().add(enrollButton);
 	}
 
-	
+	// Runs on Enroll button press to add enrollment record to database.
 	private void buttonHitActionPerformed(java.awt.event.ActionEvent evt) {
         Connection connection = null;
         PreparedStatement statement = null;
@@ -156,13 +156,18 @@ public class gui {
         lastName = lastInput.getText();
         studentID = studentInput.getText();
         
+        // Check that user is not already enrolled.
         if (!isEnrolled(studentID, courseID)) {
 		    try {
+		    	// Determine if the student already is in database.
+		    	// Add user to database if not.
 	            if (!isStudent(studentID)) {
 	                createStudent(studentID, firstName, lastName);
 	            }
 	            // get the connection 
 		        connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWD);
+		        
+		        // Insert select course and student IDs into enroll table.
 	            statement = connection.prepareStatement("INSERT INTO enroll VALUES (?,?)");
 	            statement.setString(1, studentID);        
 	            statement.setString(2, courseID.toString());
@@ -179,6 +184,7 @@ public class gui {
         }
 	}
 	
+	// Return id from course table for given course name.
 	private int getCourseID(String courseName) {
         Connection connection = null;
         ResultSet resultSet = null;
@@ -208,6 +214,7 @@ public class gui {
         return courseID;
 	}
 	
+	// Returns true if a record for student id  and course id is found on enroll table.
 	private boolean isEnrolled(String studentID, Integer courseID) {
         Connection connection = null;
         ResultSet resultSet = null;
@@ -236,6 +243,7 @@ public class gui {
         return status;
 	}
 	
+	// Returns true if student id is found on the student table.
 	private boolean isStudent(String studentID) {
         Connection connection = null;
         ResultSet resultSet = null;
@@ -263,6 +271,7 @@ public class gui {
         return status;
 	}
 	
+	// Creates a record on the student table given id, first name, and last name. 
 	private void createStudent(String studentID, String firstName, String lastName) {
         Connection connection = null;
         PreparedStatement statement = null;
